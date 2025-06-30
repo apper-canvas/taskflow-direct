@@ -40,7 +40,7 @@ const Header = () => {
               {getPageTitle()}
             </h1>
             <p className="text-sm text-gray-600 mt-1">
-              Stay organized and get things done 2
+              Stay organized and get things done 3
             </p>
           </div>
         </div>
