@@ -1,13 +1,17 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { motion } from 'framer-motion'
 import { useLocation } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import SearchBar from '@/components/molecules/SearchBar'
 import Button from '@/components/atoms/Button'
 import ApperIcon from '@/components/ApperIcon'
+import { AuthContext } from '../../App'
 
 const Header = () => {
   const location = useLocation()
   const [searchQuery, setSearchQuery] = useState('')
+  const { logout } = useContext(AuthContext)
+  const { user } = useSelector((state) => state.user)
 
   const getPageTitle = () => {
     const path = location.pathname
@@ -45,7 +49,7 @@ const Header = () => {
           </div>
         </div>
 
-        <div className="flex items-center space-x-4">
+<div className="flex items-center space-x-4">
           <div className="hidden md:block w-96">
             <SearchBar onSearch={handleSearch} />
           </div>
@@ -53,6 +57,26 @@ const Header = () => {
           <div className="flex items-center space-x-2">
             <Button variant="ghost" icon="Bell" size="sm" />
             <Button variant="ghost" icon="Settings" size="sm" />
+            
+            {user && (
+              <div className="flex items-center space-x-3 ml-4 pl-4 border-l border-gray-200">
+                <div className="hidden md:block text-right">
+                  <div className="text-sm font-medium text-gray-900">
+                    {user.firstName} {user.lastName}
+                  </div>
+                  <div className="text-xs text-gray-500">
+                    {user.emailAddress}
+                  </div>
+                </div>
+                <Button 
+                  variant="ghost" 
+                  icon="LogOut" 
+                  size="sm"
+                  onClick={logout}
+                  title="Logout"
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>

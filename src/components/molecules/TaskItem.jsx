@@ -8,13 +8,13 @@ import ApperIcon from '@/components/ApperIcon'
 
 const TaskItem = ({ task, category, onUpdate, onDelete }) => {
   const [isEditing, setIsEditing] = useState(false)
-  const [editTitle, setEditTitle] = useState(task.title)
+const [editTitle, setEditTitle] = useState(task.Name || task.title)
 
   const handleToggleComplete = () => {
     const updatedTask = {
       ...task,
       completed: !task.completed,
-      completedAt: !task.completed ? new Date() : null
+      completed_at: !task.completed ? new Date().toISOString() : null
     }
     onUpdate(updatedTask)
     toast.success(task.completed ? 'Task marked as incomplete' : 'Task completed! 🎉')
@@ -26,13 +26,13 @@ const TaskItem = ({ task, category, onUpdate, onDelete }) => {
       return
     }
     
-    onUpdate({ ...task, title: editTitle.trim() })
+    onUpdate({ ...task, Name: editTitle.trim(), title: editTitle.trim() })
     setIsEditing(false)
     toast.success('Task updated')
   }
 
-  const handleCancelEdit = () => {
-    setEditTitle(task.title)
+const handleCancelEdit = () => {
+    setEditTitle(task.Name || task.title)
     setIsEditing(false)
   }
 
@@ -50,7 +50,7 @@ const TaskItem = ({ task, category, onUpdate, onDelete }) => {
     }
   }
 
-  const getDueDateDisplay = (dueDate) => {
+const getDueDateDisplay = (dueDate) => {
     if (!dueDate) return null
     
     const date = new Date(dueDate)
@@ -61,7 +61,7 @@ const TaskItem = ({ task, category, onUpdate, onDelete }) => {
     return { text: format(date, 'MMM d'), color: 'text-gray-600', urgent: false }
   }
 
-  const dueDateInfo = getDueDateDisplay(task.dueDate)
+  const dueDateInfo = getDueDateDisplay(task.due_date || task.dueDate)
 
   return (
     <motion.div
@@ -115,13 +115,13 @@ const TaskItem = ({ task, category, onUpdate, onDelete }) => {
             </div>
           ) : (
             <div>
-              <h3 
+<h3 
                 className={`font-medium text-gray-900 ${
                   task.completed ? 'line-through text-gray-500' : ''
                 }`}
                 onDoubleClick={() => setIsEditing(true)}
               >
-                {task.title}
+                {task.Name || task.title}
               </h3>
               
               <div className="flex items-center space-x-3 mt-2">
@@ -146,8 +146,8 @@ const TaskItem = ({ task, category, onUpdate, onDelete }) => {
                   </Badge>
                 )}
                 
-                <span className="text-xs text-gray-400">
-                  {format(new Date(task.createdAt), 'MMM d, h:mm a')}
+<span className="text-xs text-gray-400">
+                  {format(new Date(task.created_at || task.createdAt), 'MMM d, h:mm a')}
                 </span>
               </div>
             </div>

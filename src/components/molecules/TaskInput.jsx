@@ -19,14 +19,15 @@ const TaskInput = ({ onAddTask, categories, selectedCategoryId }) => {
       return
     }
 
-    const newTask = {
+const newTask = {
+      Name: title.trim(),
       title: title.trim(),
       priority,
-      categoryId: categoryId || null,
-      dueDate: dueDate ? new Date(dueDate) : null,
+      category_id: categoryId || null,
+      due_date: dueDate ? new Date(dueDate).toISOString() : null,
       completed: false,
-      createdAt: new Date(),
-      completedAt: null
+      created_at: new Date().toISOString(),
+      completed_at: null
     }
 
     onAddTask(newTask)

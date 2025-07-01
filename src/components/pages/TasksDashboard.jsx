@@ -36,7 +36,7 @@ const TasksDashboard = () => {
         statsService.getStats()
       ])
 
-      let filteredTasks = tasksData
+let filteredTasks = tasksData
 
       // Apply filters based on route
       if (location.pathname === '/active') {
@@ -45,10 +45,10 @@ const TasksDashboard = () => {
         filteredTasks = tasksData.filter(task => task.completed)
       } else if (location.pathname === '/overdue') {
         filteredTasks = tasksData.filter(task => 
-          task.dueDate && new Date(task.dueDate) < new Date() && !task.completed
+          task.due_date && new Date(task.due_date) < new Date() && !task.completed
         )
       } else if (categoryId) {
-        filteredTasks = tasksData.filter(task => task.categoryId === parseInt(categoryId))
+        filteredTasks = tasksData.filter(task => task.category_id === parseInt(categoryId))
       } else if (priority) {
         filteredTasks = tasksData.filter(task => task.priority === priority)
       }
@@ -59,7 +59,7 @@ const TasksDashboard = () => {
         if (priorityOrder[a.priority] !== priorityOrder[b.priority]) {
           return priorityOrder[b.priority] - priorityOrder[a.priority]
         }
-        return new Date(b.createdAt) - new Date(a.createdAt)
+        return new Date(b.created_at || b.createdAt) - new Date(a.created_at || a.createdAt)
       })
 
       setTasks(filteredTasks)
@@ -74,8 +74,13 @@ const TasksDashboard = () => {
 
   const handleAddTask = async (taskData) => {
     try {
-      await taskService.create(taskData)
-      loadData() // Reload to get fresh data
+      const result = await taskService.create(taskData)
+      if (result) {
+        toast.success('Task added successfully!')
+        loadData() // Reload to get fresh data
+      } else {
+        toast.error('Failed to add task')
+      }
     } catch (err) {
       toast.error('Failed to add task')
     }
@@ -83,8 +88,13 @@ const TasksDashboard = () => {
 
   const handleUpdateTask = async (updatedTask) => {
     try {
-      await taskService.update(updatedTask.Id, updatedTask)
-      loadData() // Reload to get fresh data
+      const result = await taskService.update(updatedTask.Id, updatedTask)
+      if (result) {
+        toast.success('Task updated successfully!')
+        loadData() // Reload to get fresh data
+      } else {
+        toast.error('Failed to update task')
+      }
     } catch (err) {
       toast.error('Failed to update task')
     }

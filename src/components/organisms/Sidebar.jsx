@@ -17,7 +17,7 @@ const Sidebar = () => {
 
   const loadData = async () => {
     try {
-      const [categoriesData, tasksData] = await Promise.all([
+const [categoriesData, tasksData] = await Promise.all([
         categoryService.getAll(),
         taskService.getAll()
       ])
@@ -33,14 +33,14 @@ const Sidebar = () => {
         medium: tasksData.filter(task => task.priority === 'medium' && !task.completed).length,
         low: tasksData.filter(task => task.priority === 'low' && !task.completed).length,
         overdue: tasksData.filter(task => 
-          task.dueDate && new Date(task.dueDate) < new Date() && !task.completed
+          (task.due_date || task.dueDate) && new Date(task.due_date || task.dueDate) < new Date() && !task.completed
         ).length
       }
       
       // Category counts
       categoriesData.forEach(category => {
         counts[`category-${category.Id}`] = tasksData.filter(
-          task => task.categoryId === category.Id && !task.completed
+          task => (task.category_id || task.categoryId) === category.Id && !task.completed
         ).length
       })
       
@@ -173,7 +173,7 @@ const Sidebar = () => {
             </button>
           </div>
           <nav className="space-y-1">
-            {categories.map((category) => (
+{categories.map((category) => (
               <NavLink
                 key={category.Id}
                 to={`/category/${category.Id}`}
@@ -190,7 +190,7 @@ const Sidebar = () => {
                     className="w-3 h-3 rounded-full"
                     style={{ backgroundColor: category.color }}
                   />
-                  <span className="truncate">{category.name}</span>
+                  <span className="truncate">{category.Name || category.name}</span>
                 </div>
                 {taskCounts[`category-${category.Id}`] > 0 && (
                   <Badge variant="secondary" size="sm">
